@@ -77,4 +77,22 @@ class FacebookHelper
             }
         </script>";
     }
+
+    /**
+     * @return string
+     */
+    public function getAppId(): string
+    {
+        return $this->app_id;
+    }
+
+    /**
+     * @param string $app_id
+     * @return FacebookHelper
+     */
+    public function setAppId(string $app_id): FacebookHelper
+    {
+        $this->app_id = $app_id;
+        return $this;
+    }
 }
