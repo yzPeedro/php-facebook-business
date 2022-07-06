@@ -59,4 +59,24 @@ class FacebookUser
             throw new FacebookException($exception->getMessage());
         }
     }
+
+    /**
+     * @return mixed
+     * @throws FacebookException
+     */
+    function accounts(): mixed
+    {
+        try {
+            $data = [ 'access_token' => $this->getAccessToken() ];
+            $client = new Client(['base_uri' => self::FB_BASE_URI]);
+
+            $response = $client->request('GET', '/me/accounts?'.http_build_query($data), [
+                'Accept' => 'application/json'
+            ]);
+
+            return json_decode($response->getBody());
+        } catch (GuzzleException $exception) {
+            throw new FacebookException($exception->getMessage());
+        }
+    }
 }
