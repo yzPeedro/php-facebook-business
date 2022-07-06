@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use Meta\FacebookSDK\Facebook;
 
-class FacebookTest extends TestCase
+class FacebookHelperTest extends TestCase
 {
     public function testJavascriptHelper()
     {
