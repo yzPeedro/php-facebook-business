@@ -24,6 +24,6 @@
         }
     ],
     "scripts": {
-        "meta-test": "php vendor\\phpunit\\phpunit\\phpunit test/ --colors"
+        "meta-test": "php vendor\\phpunit\\phpunit\\phpunit test/ --colors=always --debug"
     }
 }
