@@ -10,22 +10,49 @@ class InstagramBusinessAccount
 {
     private const FB_BASE_URI = "https://graph.facebook.com";
 
+    /**
+     * @var string
+     */
     private string $username;
 
+    /**
+     * @var string
+     */
     private string $biography;
 
+    /**
+     * @var string
+     */
     private string $followers_count;
 
+    /**
+     * @var string
+     */
     private string $follows_count;
 
+    /**
+     * @var string
+     */
     private string $ig_id;
 
+    /**
+     * @var string
+     */
     private string $media_count;
 
+    /**
+     * @var string
+     */
     private string $name;
 
+    /**
+     * @var string
+     */
     private string $profile_picture_url;
 
+    /**
+     * @var stdClass
+     */
     private StdClass $media;
 
     /**
