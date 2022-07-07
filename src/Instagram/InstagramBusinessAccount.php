@@ -4,6 +4,8 @@ namespace Meta\InstagramSDK;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\RequestOptions;
+use Meta\InstagramSDK\Exception\InstagramException;
 use stdClass;
 
 class InstagramBusinessAccount
@@ -59,7 +61,7 @@ class InstagramBusinessAccount
      * @param string|int $id
      * @param string $page_access_token
      */
-    public function __construct(string|int $id, private string $page_access_token)
+    public function __construct(private string|int $id, private string $page_access_token)
     {
         try {
             $data = [
@@ -74,6 +76,7 @@ class InstagramBusinessAccount
                     'name',
                     'profile_picture_url',
                     'media',
+                    'id'
                 ]
             ];
 
@@ -179,5 +182,37 @@ class InstagramBusinessAccount
     public function getPageAccessToken(): string
     {
         return $this->page_access_token;
+    }
+
+    /**
+     * @return int|string
+     */
+    public function getId(): int|string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param array $parameters
+     * @return mixed
+     * @throws InstagramException
+     */
+    public function getInsights(array $parameters = []): mixed
+    {
+        try {
+            $data = ['access_token' => $this->getPageAccessToken() ];
+
+            if (empty($parameters)) {
+                $data['period'] = 'day';
+                $data['metric'] = 'impressions';
+            }
+
+            $client = new Client(['base_uri' => self::FB_BASE_URI]);
+            $response = $client->request('GET', "/$this->id/insights?".http_build_query($data));
+
+            return json_decode($response->getBody());
+        } catch (GuzzleException $exception) {
+            throw new InstagramException($exception->getMessage(), $exception->getCode());
+        }
     }
 }
