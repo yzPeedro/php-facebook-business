@@ -212,7 +212,7 @@ class InstagramBusinessAccount
             ];
 
             if (empty($fields)) {
-                $data['metric'] = 'reach';
+                $data['metric'] = 'reach,engagement';
                 $data['period'] = 'day';
             }
 
