@@ -3,6 +3,7 @@
 namespace Meta\InstagramSDK;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Meta\InstagramSDK\Exception\InstagramException;
@@ -60,6 +61,8 @@ class InstagramBusinessAccount
     /**
      * @param string|int $id
      * @param string $page_access_token
+     * @throws GuzzleException
+     * @throws InstagramException
      */
     public function __construct(private string|int $id, private string $page_access_token)
     {
@@ -99,8 +102,8 @@ class InstagramBusinessAccount
             $this->profile_picture_url = $instagramBusinessAccount->profile_picture_url;
             $this->media = $instagramBusinessAccount->media;
 
-        } catch (GuzzleException $exception) {
-            dd($exception->getMessage());
+        } catch (ClientException $exception) {
+            throw new InstagramException($exception->getResponse()->getBody(), $exception->getCode());
         }
     }
 
@@ -171,6 +174,7 @@ class InstagramBusinessAccount
     /**
      * @return array
      * @throws InstagramException
+     * @throws GuzzleException
      */
     public function getMedia(): array
     {
@@ -187,8 +191,8 @@ class InstagramBusinessAccount
             }
 
             return json_decode(json_encode($mda));
-        } catch (GuzzleException $exception) {
-            throw new InstagramException($exception->getMessage(), $exception->getCode());
+        } catch (ClientException $exception) {
+            throw new InstagramException($exception->getResponse()->getBody(), $exception->getCode());
         }
     }
 
@@ -197,6 +201,7 @@ class InstagramBusinessAccount
      * @param array $medias_id
      * @return stdClass
      * @throws InstagramException
+     * @throws GuzzleException
      */
     public function getMediaInsights(array $fields = [], array $medias_id = []): StdClass
     {
@@ -235,8 +240,8 @@ class InstagramBusinessAccount
             }
             return json_decode(json_encode($mda));
 
-        } catch (GuzzleException $exception) {
-            throw new InstagramException($exception->getMessage(), $exception->getCode());
+        } catch (ClientException $exception) {
+            throw new InstagramException($exception->getResponse()->getBody(), $exception->getCode());
         }
     }
 
@@ -260,6 +265,7 @@ class InstagramBusinessAccount
      * @param array $parameters
      * @return mixed
      * @throws InstagramException
+     * @throws GuzzleException
      */
     public function getInsights(array $parameters = []): mixed
     {
@@ -275,8 +281,8 @@ class InstagramBusinessAccount
             $response = $client->request('GET', "/$this->id/insights?".http_build_query($data));
 
             return json_decode($response->getBody());
-        } catch (GuzzleException $exception) {
-            throw new InstagramException($exception->getMessage(), $exception->getCode());
+        } catch (ClientException $exception) {
+            throw new InstagramException($exception->getResponse()->getBody(), $exception->getCode());
         }
     }
 }
