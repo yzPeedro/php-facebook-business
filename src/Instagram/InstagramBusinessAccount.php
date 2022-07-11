@@ -193,6 +193,54 @@ class InstagramBusinessAccount
     }
 
     /**
+     * @param array $fields
+     * @param array $medias_id
+     * @return stdClass
+     * @throws InstagramException
+     */
+    public function getMediaInsights(array $fields = [], array $medias_id = []): StdClass
+    {
+        try {
+            $mda = [];
+            $data = [
+                'access_token' => $this->getPageAccessToken()
+            ];
+
+            if (empty($fields)) {
+                $data['metric'] = 'reach';
+                $data['period'] = 'day';
+            }
+
+            foreach ($fields as $index => $field) {
+                if (is_array($field)) {
+                    $fields[$index] = implode(',', $field);
+                }
+                $data[$index] = $fields[$index];
+            }
+            
+            if(empty($medias_id)) {
+                $medias = $this->getMedia();
+                foreach ($medias as $media) {
+                    $client = new Client(['base_uri' => self::FB_BASE_URI]);
+                    $response = $client->request('GET', "$media->id/insights?".http_build_query($data));
+                    $mda[] = json_decode($response->getBody());
+                }
+                return json_decode(json_encode($mda));
+            }
+
+            foreach ($medias_id as $mediaId) {
+                $client = new Client(['base_uri' => self::FB_BASE_URI]);
+                $response = $client->request('GET', "$mediaId/insights?".http_build_query($data));
+                $mda[] = json_decode($response->getBody());
+            }
+            return json_decode(json_encode($mda));
+
+        } catch (GuzzleException $exception) {
+            throw new InstagramException($exception->getMessage(), $exception->getCode());
+        }
+    }
+
+    /**
      * @return string
      */
     public function getPageAccessToken(): string
