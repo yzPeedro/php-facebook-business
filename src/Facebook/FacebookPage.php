@@ -3,6 +3,7 @@
 namespace Meta\FacebookSDK;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Meta\FacebookSDK\Exception\FacebookException;
 use Meta\InstagramSDK\InstagramBusinessAccount;
@@ -86,6 +87,7 @@ class FacebookPage
      * @param array $fields
      * @return mixed
      * @throws FacebookException
+     * @throws GuzzleException
      */
     public function me(array $fields = []): mixed
     {
@@ -108,14 +110,16 @@ class FacebookPage
             ]);
 
             return json_decode($response->getBody());
-        } catch (GuzzleException $exception) {
-            throw new FacebookException($exception->getMessage());
+        } catch (ClientException $exception) {
+            throw new FacebookException($exception->getResponse()->getBody(), $exception->getCode());
         }
     }
 
     /**
      * @return InstagramBusinessAccount
      * @throws FacebookException
+     * @throws GuzzleException
+     * @throws \Meta\InstagramSDK\Exception\InstagramException
      */
     public function getInstagramBusinessAccount(): InstagramBusinessAccount
     {
@@ -135,8 +139,8 @@ class FacebookPage
                 $response->instagram_business_account->id,
                 $this->getAccessToken());
 
-        } catch (GuzzleException $exception) {
-            throw new FacebookException($exception->getMessage());
+        } catch (ClientException $exception) {
+            throw new FacebookException($exception->getResponse()->getBody(), $exception->getCode());
         }
     }
 }

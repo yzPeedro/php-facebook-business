@@ -1,11 +1,11 @@
 <?php
 
-namespace Meta\FacebookSDK\Exception;
+namespace Meta\InstagramSDK\Exception;
 
 use Exception;
 use Throwable;
 
-class FacebookException extends Exception
+class InstagramException extends Exception
 {
     public function __construct($message = "", $code = 0, Throwable $previous = null)
     {

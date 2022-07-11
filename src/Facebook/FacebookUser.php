@@ -3,6 +3,7 @@
 namespace Meta\FacebookSDK;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Meta\FacebookSDK\Exception\FacebookException;
 
@@ -32,6 +33,7 @@ class FacebookUser
 
     /**
      * @throws FacebookException
+     * @throws GuzzleException
      */
     public function me(array $fields = [])
     {
@@ -55,14 +57,15 @@ class FacebookUser
             ]);
 
             return json_decode($response->getBody());
-        } catch (GuzzleException $exception) {
-            throw new FacebookException($exception->getMessage());
+        } catch (ClientException $exception) {
+            throw new FacebookException($exception->getResponse()->getBody(), $exception->getCode());
         }
     }
 
     /**
      * @return mixed
      * @throws FacebookException
+     * @throws GuzzleException
      */
     function accounts(): mixed
     {
@@ -75,8 +78,8 @@ class FacebookUser
             ]);
 
             return json_decode($response->getBody());
-        } catch (GuzzleException $exception) {
-            throw new FacebookException($exception->getMessage());
+        } catch (ClientException $exception) {
+            throw new FacebookException($exception->getResponse()->getBody(), $exception->getCode());
         }
     }
 }
