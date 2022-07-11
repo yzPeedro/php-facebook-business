@@ -169,11 +169,27 @@ class InstagramBusinessAccount
     }
 
     /**
-     * @return StdClass
+     * @return array
+     * @throws InstagramException
      */
-    public function getMedia(): StdClass
+    public function getMedia(): array
     {
-        return $this->media;
+        try {
+            $mda = [];
+            $fields = [ 'comments', 'id', 'like_count', 'media_type' ];
+            $data = [ 'access_token' => $this->getPageAccessToken(), 'fields' => implode(',', $fields) ];
+
+            foreach ($this->media->data as $media) {
+                $client = new Client(['base_uri' => self::FB_BASE_URI]);
+                $response = $client->request('GET', "$media->id/?".http_build_query($data));
+                $responseMedia = json_decode($response->getBody());
+                $mda[] = $responseMedia;
+            }
+
+            return json_decode(json_encode($mda));
+        } catch (GuzzleException $exception) {
+            throw new InstagramException($exception->getMessage(), $exception->getCode());
+        }
     }
 
     /**
