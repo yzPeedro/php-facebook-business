@@ -11,4 +11,9 @@ class FacebookException extends Exception
     {
         parent::__construct($message, $code, $previous);
     }
+
+    public function getJsonException()
+    {
+        return json_decode($this->getMessage());
+    }
 }
