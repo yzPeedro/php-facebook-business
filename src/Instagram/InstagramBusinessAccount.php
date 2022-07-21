@@ -222,7 +222,7 @@ class InstagramBusinessAccount
                 }
                 $data[$index] = $fields[$index];
             }
-            
+
             if(empty($medias_id)) {
                 $medias = $this->getMedia();
                 foreach ($medias as $media) {
@@ -240,6 +240,25 @@ class InstagramBusinessAccount
             }
             return json_decode(json_encode($mda));
 
+        } catch (ClientException $exception) {
+            throw new InstagramException($exception->getResponse()->getBody(), $exception->getCode());
+        }
+    }
+
+    /**
+     * @return mixed
+     * @throws InstagramException
+     * @throws GuzzleException
+     */
+    public function getStories(): mixed
+    {
+        try {
+            $data = [ 'access_token' => $this->getPageAccessToken() ];
+
+            $client = new Client(['base_uri' => self::FB_BASE_URI]);
+            $response = $client->request('GET', "{$this->getId()}/stories?".http_build_query($data));
+
+            return json_decode($response->getBody());
         } catch (ClientException $exception) {
             throw new InstagramException($exception->getResponse()->getBody(), $exception->getCode());
         }
